@@ -12,3 +12,9 @@ This payment protocol is focusing on hiding the recipient's address and, as resu
 You could say that you can achieve the same with just the creation of a new address, and it’s partially true, while it solves the problem of hiding financial history it creates other problems:
 - you need some native tokens in this wallet to be able to do something
 - if you move tokens to your main wallet without going to the mixer - the sender would still be able to make the connection
+
+## To run tests
+```
+npm run circuit:build
+npm run test
+```
