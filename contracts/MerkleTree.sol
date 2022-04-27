@@ -31,7 +31,7 @@ contract MerkleTree {
         }
     }
 
-    function insert(uint256 leaf) public returns (uint32) {// todo: change to internal
+    function insert(uint256 leaf) internal returns (uint32) {
         require(index != maxSize, "Merkle tree is full");
         require(leaf < FIELD_SIZE, "Leaf has to be within field size");
 
