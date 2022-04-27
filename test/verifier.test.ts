@@ -1,36 +1,22 @@
-import '@nomiclabs/hardhat-ethers'
+import "@nomiclabs/hardhat-ethers"
 import { ethers } from "hardhat"
 import { Verifier } from "../artifacts/contracts/types"
 // @ts-ignore
 import { groth16 } from "snarkjs";
 import { BigNumber } from "ethers";
-import { randomBytes } from "crypto";
 // @ts-ignore
 import { buildPoseidon } from "circomlibjs";
 import { MerkleTree } from "fixed-merkle-tree";
 // @ts-ignore
 import { utils } from "ffjavascript";
 import { expect } from "chai";
+import { randomBN } from "./utils";
+import { PoseidonHasher } from "./poseidonHasher";
 
-const randomBN = (nbytes = 31) => BigNumber.from(randomBytes(nbytes))
-
-class PoseidonHasher {
-  poseidon: any;
-
-  constructor(poseidon: any) {
-    this.poseidon = poseidon;
-  }
-
-  hash(left: BigNumber, right: BigNumber) {
-    const hash = this.poseidon([left, right]);
-    return BigNumber.from(this.poseidon.F.toString(hash));
-  }
-}
-
-describe("Verifier", async () => {
+describe("Verifier", () => {
   let poseidon: PoseidonHasher;
 
-  beforeEach(async () => {
+  before(async () => {
     poseidon = new PoseidonHasher(await buildPoseidon());
   });
 
@@ -45,7 +31,7 @@ describe("Verifier", async () => {
     for (let i = 0; i < 1024; i++) {
       const a = randomBN();
       const b = randomBN();
-      if (i == index) {
+      if (i === index) {
         nullifier = a.toString();
         secret = b.toString();
       }
