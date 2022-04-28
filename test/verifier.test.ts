@@ -45,7 +45,9 @@ describe("Verifier", () => {
 
     const merkleProof = tree.proof(leaves[index]);
 
+    const recipient = BigNumber.from("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2").toString();
     const input: Input = {
+      recipient: recipient,
       root: merkleProof.pathRoot.toString(),
       nullifier: nullifier,
       secret: secret,
@@ -63,7 +65,7 @@ describe("Verifier", () => {
       [proof.pi_a[0], proof.pi_a[1]],
       [[proof.pi_b[0][1], proof.pi_b[0][0]], [proof.pi_b[1][1], proof.pi_b[1][0]]],
       [proof.pi_c[0], proof.pi_c[1]],
-      [nullifierHash, merkleProof.pathRoot]
+      [nullifierHash, recipient, merkleProof.pathRoot]
     );
 
     expect(valid).to.be.true;
@@ -71,6 +73,7 @@ describe("Verifier", () => {
 });
 
 type Input = {
+  recipient: string,
   root: string,
   nullifier: string,
   secret: string,

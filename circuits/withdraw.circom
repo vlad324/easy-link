@@ -12,6 +12,7 @@ include "./merkleproof.circom";
 */
 template Withdraw(levels) {
 
+    signal input recipient;
     signal input root;
     signal input nullifier;
     signal input secret;
@@ -41,6 +42,9 @@ template Withdraw(levels) {
     nullifierHasher.inputs[1] <== pathNumber.out;
 
     nullifierHash <== nullifierHasher.out;
+
+    signal recipientSquare;
+    recipientSquare <== recipient * recipient;
 }
 
-component main { public [root] } = Withdraw(10);
+component main { public [recipient, root] } = Withdraw(10);
