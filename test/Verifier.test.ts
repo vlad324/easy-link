@@ -1,17 +1,14 @@
 import "@nomiclabs/hardhat-ethers"
 import { ethers } from "hardhat"
 import { Verifier } from "../artifacts/contracts/types"
-// @ts-ignore
-import { groth16 } from "snarkjs";
 import { BigNumber } from "ethers";
 // @ts-ignore
 import { buildPoseidon } from "circomlibjs";
 import { MerkleTree } from "fixed-merkle-tree";
-// @ts-ignore
-import { utils } from "ffjavascript";
-import { expect } from "chai";
+import chai from "chai";
 import { randomBN } from "./utils";
 import { PoseidonHasher } from "./poseidonHasher";
+import { generateProof, Input } from "../utils/proof";
 
 describe("Verifier", () => {
   let poseidon: PoseidonHasher;
@@ -68,32 +65,6 @@ describe("Verifier", () => {
       [nullifierHash, recipient, merkleProof.pathRoot]
     );
 
-    expect(valid).to.be.true;
+    chai.expect(valid).to.be.equal(true);
   });
 });
-
-type Input = {
-  recipient: string,
-  root: string,
-  nullifier: string,
-  secret: string,
-  pathElements: string[],
-  pathIndices: number[]
-}
-
-type Proof = {
-  pi_a: string[3],
-  pi_b: string[3][2],
-  pi_c: string[2],
-  protocol: string,
-  curve: string
-}
-
-const generateProof = async (input: Input): Promise<Proof> => {
-  const { proof } = await groth16.fullProve(
-    utils.stringifyBigInts(input),
-    "./artifacts/circuits/withdraw.wasm",
-    "./artifacts/circuits/withdraw.zkey");
-
-  return proof;
-}

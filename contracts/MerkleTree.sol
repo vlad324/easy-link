@@ -21,7 +21,7 @@ contract MerkleTree {
 
     constructor(uint8 _levels, address _hasher) {
         require(_levels > 0, "_levels should be greater than 0");
-        require(_levels <= 9, "_levels should not be greater than 9");
+        require(_levels <= 10, "_levels should not be greater than 10");
         levels = _levels;
         hasher = IPoseidonHasher(_hasher);
         maxSize = uint32(2) ** levels;
@@ -58,6 +58,28 @@ contract MerkleTree {
 
         index++;
         return index - 1;
+    }
+
+    function isValidRoot(uint256 root) public view returns (bool) {
+        if (root == 0) {
+            return false;
+        }
+
+        uint32 currentIndex = index % ROOT_HISTORY_SIZE;
+        uint32 i = currentIndex;
+        do {
+            if (roots[i] == root) {
+                return true;
+            }
+
+            if (i == 0) {
+                i = ROOT_HISTORY_SIZE;
+            }
+            i--;
+        }
+        while (i != currentIndex);
+
+        return false;
     }
 
     // poseidon(keccak256("easy-links") % FIELD_SIZE)

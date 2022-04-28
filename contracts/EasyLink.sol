@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./MerkleTree.sol";
+import "./Verifier.sol";
 
 contract EasyLink is MerkleTree {
 
@@ -38,5 +39,22 @@ contract EasyLink is MerkleTree {
         commitments[commitment] = true;
 
         emit Deposit(commitment, index);
+    }
+
+    function withdraw(
+        uint256[2] memory a,
+        uint256[2][2] memory b,
+        uint256[2] memory c,
+        uint256 nullifierHash,
+        address recipient,
+        uint256 merkleRoot
+    ) external {
+        require(!spentNullifiers[nullifierHash], "Nullifier already spent");
+        require(isValidRoot(merkleRoot), "Root is not valid");
+        require(Verifier(verifier).verifyProof(a, b, c, [nullifierHash, uint256(uint160(recipient)), merkleRoot]), "Proof is not valid");
+
+        spentNullifiers[nullifierHash] = true;
+
+        IERC20(token).transfer(recipient, amount);
     }
 }
