@@ -2,7 +2,7 @@ import "@nomiclabs/hardhat-ethers"
 import { ethers } from "hardhat";
 import chai from "chai";
 import { PoseidonHasher } from "./poseidonHasher";
-import { EasyLink, IPoseidonHasher, Verifier } from "../artifacts/contracts/types";
+import { EasyLink, EasyLinkToken, IPoseidonHasher, Verifier } from "../artifacts/contracts/types";
 // @ts-ignore
 import { buildPoseidon } from "circomlibjs";
 import { randomBN } from "./utils";
@@ -14,6 +14,7 @@ chai.use(solidity);
 
 describe("EasyLink", () => {
   let poseidon: PoseidonHasher;
+  let token: EasyLinkToken;
   let verifier: Verifier;
   let hasher: IPoseidonHasher;
   let easyLink: EasyLink;
@@ -23,6 +24,11 @@ describe("EasyLink", () => {
   });
 
   beforeEach(async () => {
+    const Token = await ethers.getContractFactory("EasyLinkToken");
+    token = (await Token.deploy()) as EasyLinkToken;
+
+    await token.mint(ethers.utils.parseEther("100"));
+
     const Verifier = await ethers.getContractFactory("Verifier");
     verifier = (await Verifier.deploy()) as Verifier;
 
@@ -30,7 +36,8 @@ describe("EasyLink", () => {
     hasher = (await Hasher.deploy()) as IPoseidonHasher;
 
     const EasyLink = await ethers.getContractFactory("EasyLink");
-    easyLink = (await EasyLink.deploy(verifier.address, 9, hasher.address)) as EasyLink;
+    easyLink = (await EasyLink.deploy(token.address, ethers.utils.parseEther("1"),
+      verifier.address, 9, hasher.address)) as EasyLink;
   });
 
   it("should have initial index set to 0", async () => {
@@ -41,6 +48,8 @@ describe("EasyLink", () => {
 
   it("should add a new commitment", async () => {
     const commitment = randomBN();
+
+    await token.approve(easyLink.address, ethers.utils.parseEther("1"));
 
     await chai.expect(easyLink.deposit(commitment))
       .to.emit(easyLink, "Deposit")
@@ -59,6 +68,8 @@ describe("EasyLink", () => {
 
   it("should revert when duplicated commitment", async () => {
     const commitment = randomBN();
+
+    await token.approve(easyLink.address, ethers.utils.parseEther("1"));
 
     await chai.expect(easyLink.deposit(commitment))
       .to.emit(easyLink, "Deposit")
