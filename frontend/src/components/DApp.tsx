@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
+import Menu from "./Menu";
 import { ethers } from "ethers";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const DApp = () => {
 
@@ -19,10 +21,12 @@ const DApp = () => {
 
   return (
     <>
+      <CssBaseline/>
       <Navbar
         provider={provider}
         setProvider={setProvider}
       />
+      <Menu/>
     </>
   );
 }

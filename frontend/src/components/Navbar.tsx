@@ -1,6 +1,6 @@
-import { Button, Container, Nav, Row } from "react-bootstrap";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 
 interface Props {
   provider: ethers.providers.Web3Provider | undefined,
@@ -27,19 +27,22 @@ const Navbar = (props: Props) => {
   }
 
   return (
-    <Container>
-      <Row>
-        <Nav className="justify-content-end" activeKey="/home">
-          <Nav.Item>
-            {
-              account ?
-                <div>{account}</div> :
-                <Button variant="warning" onClick={connectWallet}>Connect wallet</Button>
-            }
-          </Nav.Item>
-        </Nav>
-      </Row>
-    </Container>
+    <AppBar position="static"
+            color="default"
+            elevation={0}>
+      <Toolbar sx={{ flexWrap: 'wrap' }}>
+        <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
+          Easy Link
+        </Typography>
+        {
+          account ?
+            "" + account :
+            <Button variant="outlined" onClick={connectWallet}>
+              Connect wallet
+            </Button>
+        }
+      </Toolbar>
+    </AppBar>
   );
 }
 
