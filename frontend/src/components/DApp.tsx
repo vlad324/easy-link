@@ -3,6 +3,8 @@ import Navbar from "./Navbar";
 import Menu from "./Menu";
 import { ethers } from "ethers";
 import CssBaseline from "@mui/material/CssBaseline";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Pay from "./Pay";
 
 const DApp = () => {
 
@@ -20,14 +22,19 @@ const DApp = () => {
   });
 
   return (
-    <>
+    <Router>
       <CssBaseline/>
       <Navbar
         provider={provider}
         setProvider={setProvider}
       />
-      <Menu/>
-    </>
+      <Routes>
+        <Route path="/" element={<Menu/>}/>
+        <Route path="/create" element={<h2>TODO: create link</h2>}/>
+        <Route path="/redeem" element={<h2>TODO: redeem link</h2>}/>
+        <Route path="/pay/:commitment" element={<Pay/>}/>
+      </Routes>
+    </Router>
   );
 }
 export default DApp;

@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface Props {
   provider: ethers.providers.Web3Provider | undefined,
@@ -32,7 +33,9 @@ const Navbar = (props: Props) => {
             elevation={0}>
       <Toolbar sx={{ flexWrap: 'wrap' }}>
         <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-          Easy Link
+          <Link to="/" style={{ textDecoration: "none" }}>
+            Easy Link
+          </Link>
         </Typography>
         {
           account ?

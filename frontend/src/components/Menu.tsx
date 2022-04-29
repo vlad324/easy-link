@@ -1,4 +1,5 @@
 import { Box, Button, Container, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const Menu = () => {
   return (
@@ -13,14 +14,18 @@ const Menu = () => {
       >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <Button size="large" fullWidth variant="contained">
-              Create link
-            </Button>
+            <Link to="/create" style={{ textDecoration: "none" }}>
+              <Button size="large" fullWidth variant="contained">
+                Create link
+              </Button>
+            </Link>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Button size="large" fullWidth variant="contained">
-              Redeem tokens
-            </Button>
+            <Link to="/redeem" style={{ textDecoration: "none" }}>
+              <Button size="large" fullWidth variant="contained">
+                Redeem tokens
+              </Button>
+            </Link>
           </Grid>
         </Grid>
       </Box>
