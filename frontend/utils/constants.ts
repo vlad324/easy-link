@@ -1,2 +1,4 @@
+export const EASY_LINK_EVENTS_KEY = "easy-link-events";
+
 export const EASY_LINK_CONTRACT = "0xbe9EFd3c826C9bDF14c8F175e07b0B40543982fF";
 export const ELT_TOKEN = "0xc8aA842E648f9fE24594087aBC597480d2881097";

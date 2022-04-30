@@ -1,11 +1,12 @@
 import { Box, Button, Text, Textarea, VStack } from "@chakra-ui/react"
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { GlobalContext } from "../contexts/GlobalContext";
+import { GlobalContext, LocalStoredEvent } from "../contexts/GlobalContext";
 import base64url from "base64url";
 import { BigNumber } from "ethers";
 import { MerkleTree } from "fixed-merkle-tree";
 import { generateProof } from "../utils/proof";
 import { CheckIcon } from "@chakra-ui/icons";
+import { EASY_LINK_EVENTS_KEY } from "../utils/constants";
 
 const Redeem = () => {
 
@@ -58,7 +59,8 @@ const Redeem = () => {
 
     const commitment = context.hasher.hash(BigNumber.from(nullifierLocal), BigNumber.from(secretLocal)).toString();
 
-    const paidCommitment = context.depositEvents.filter(it => it.commitment === commitment);
+    const events = JSON.parse(localStorage.getItem(EASY_LINK_EVENTS_KEY) || "[]") as LocalStoredEvent[]
+    const paidCommitment = events.filter(it => it.commitment === commitment);
     if (paidCommitment.length == 0) {
       setError("Related payment link wasn't payed yet");
       setRedeemLoading(false);
@@ -69,7 +71,7 @@ const Redeem = () => {
       hashFunction: (a, b) => context.hasher.hash(BigNumber.from(a), BigNumber.from(b)).toString(),
       zeroElement: "12339540769637658105100870666479336797812683353093222300453955367174479050262"
     });
-    tree.bulkInsert(context.depositEvents.map(it => it.commitment));
+    tree.bulkInsert(events.map(it => it.commitment));
     setTree(tree);
 
     setError(undefined);

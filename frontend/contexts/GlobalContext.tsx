@@ -4,7 +4,7 @@ import { PoseidonHasher } from "../utils/hasher";
 import EasyLinkJson from "../contracts/EasyLink.sol/EasyLink.json";
 import EasyLinkTokenJson from "../contracts/EasyLinkToken.sol/EasyLinkToken.json";
 import { EasyLink, EasyLinkToken } from "../contracts/types";
-import { EASY_LINK_CONTRACT, ELT_TOKEN } from "../utils/constants";
+import { EASY_LINK_CONTRACT, EASY_LINK_EVENTS_KEY, ELT_TOKEN } from "../utils/constants";
 import { DepositEvent } from "../contracts/types/contracts/EasyLink";
 
 const buildPoseidon = require("circomlibjs").buildPoseidon;
@@ -16,11 +16,10 @@ export const GlobalContext = createContext<Context>({
   },
   hasher: hasher,
   easyLink: undefined,
-  easyLinkToken: undefined,
-  depositEvents: []
+  easyLinkToken: undefined
 });
 
-export interface Event {
+export interface LocalStoredEvent {
   commitment: string,
   index: number
 }
@@ -30,8 +29,7 @@ export interface Context {
   setProvider: (p: ethers.providers.Web3Provider) => void,
   hasher: PoseidonHasher,
   easyLink: EasyLink | undefined
-  easyLinkToken: EasyLinkToken | undefined,
-  depositEvents: Event[]
+  easyLinkToken: EasyLinkToken | undefined
 }
 
 export const GlobalContextProvider = ({ children }: any) => {
@@ -39,30 +37,33 @@ export const GlobalContextProvider = ({ children }: any) => {
   const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
   const [easyLink, setEasyLink] = useState<EasyLink>();
   const [easyLinkToken, setEasyLinkToken] = useState<EasyLinkToken>();
-  const [depositEvents, setDepositEvents] = useState<Event[]>([]);
 
-  if (provider && !easyLink) {
-    console.log("easy link contract creation");
-    setEasyLink(new ethers.Contract(EASY_LINK_CONTRACT, EasyLinkJson.abi, provider.getSigner(0)) as EasyLink);
-  }
-
-  if (provider && !easyLinkToken) {
-    console.log("token contract creation");
-    setEasyLinkToken(new ethers.Contract(ELT_TOKEN, EasyLinkTokenJson.abi, provider.getSigner(0)) as EasyLinkToken);
-  }
-
-  if (easyLink && depositEvents.length === 0) {
-    console.log("event query");
-    easyLink.queryFilter(easyLink.filters.Deposit(), 26144671)
+  const populateEvents = (el: EasyLink) => {
+    console.log("populateEvents");
+    el.queryFilter(el.filters.Deposit(), 26147022)
       .then(events => {
-        const map = events.map((it: DepositEvent) => {
+        const mappedEvents = events.map((it: DepositEvent) => {
           return {
             commitment: it.args.commitment.toString(),
             index: it.args.index
           };
         });
-        setDepositEvents(map);
+
+        localStorage.setItem(EASY_LINK_EVENTS_KEY, JSON.stringify(mappedEvents));
       });
+  }
+
+  if (provider && !easyLink) {
+    console.log("easy link contract creation");
+    const contract = new ethers.Contract(EASY_LINK_CONTRACT, EasyLinkJson.abi, provider.getSigner(0)) as EasyLink;
+    setEasyLink(contract);
+    populateEvents(contract);
+    setInterval(() => populateEvents(contract), 5000);
+  }
+
+  if (provider && !easyLinkToken) {
+    console.log("token contract creation");
+    setEasyLinkToken(new ethers.Contract(ELT_TOKEN, EasyLinkTokenJson.abi, provider.getSigner(0)) as EasyLinkToken);
   }
 
   return (
@@ -71,8 +72,7 @@ export const GlobalContextProvider = ({ children }: any) => {
       setProvider,
       hasher,
       easyLink,
-      easyLinkToken,
-      depositEvents
+      easyLinkToken
     }}>
       {children}
     </GlobalContext.Provider>
