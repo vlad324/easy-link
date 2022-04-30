@@ -14,6 +14,11 @@ import { TASK_COMPILE } from "hardhat/builtin-tasks/task-names";
 
 const TASK_COMPILE_HASHER = "compile:hasher";
 
+require("dotenv").config();
+
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
+const MUMBAI_PRIVATE_KEY = process.env.MUMBAI_PRIVATE_KEY;
+
 const config: HardhatUserConfig = {
   solidity: "0.8.13",
   circom: {
@@ -30,6 +35,12 @@ const config: HardhatUserConfig = {
     outDir: "artifacts/contracts/types",
     target: "ethers-v5"
   },
+  networks: {
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
+      accounts: [`${MUMBAI_PRIVATE_KEY}`]
+    }
+  }
 }
 
 export default config;
