@@ -1,4 +1,4 @@
-import { Box, Center, Text, VStack } from "@chakra-ui/react"
+import { Box, Center, Text, VStack, Divider } from "@chakra-ui/react"
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../contexts/GlobalContext";
 import { randomBN } from "../utils/random";
@@ -38,7 +38,8 @@ const Create = () => {
           </Link>
         </Box>
         <Text>Share it with someone who owns you money</Text>
-        <Text>User this secret to redeem tokens after:</Text>
+        <Divider/>
+        <Text>Use this secret to redeem tokens later:</Text>
         <Box bg={"#D3D3D3"} w={"45%"} borderRadius={"5px"} padding={"10px"}>
           <Text noOfLines={[2, 3]}>{redeemSecret}</Text>
         </Box>

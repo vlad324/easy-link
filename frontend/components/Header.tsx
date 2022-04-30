@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Link } from '@chakra-ui/react';
+import { Box, Button, Center, Link, Text } from '@chakra-ui/react';
 import { useRouter } from "next/router";
 import { GlobalContext } from "../contexts/GlobalContext";
 import { ethers } from "ethers";
@@ -35,16 +35,16 @@ const Header = () => {
       >
         <Center>
           <Link onClick={() => router.push("/")}>
-            EasyLink
+            <Text fontSize="2xl">EasyLink</Text>
           </Link>
         </Center>
-        <Box textAlign="right">
+        <Center textAlign="right">
           {
             account ?
               "" + account :
               <Button onClick={connectWallet} textAlign="center">Connect wallet</Button>
           }
-        </Box>
+        </Center>
       </Box>
     </>
   );
