@@ -5,6 +5,7 @@ import base64url from "base64url";
 import { BigNumber } from "ethers";
 import { MerkleTree } from "fixed-merkle-tree";
 import { generateProof } from "../utils/proof";
+import { CheckIcon } from "@chakra-ui/icons";
 
 const Redeem = () => {
 
@@ -16,6 +17,7 @@ const Redeem = () => {
   const [nullifier, setNullifier] = useState<string>();
   const [tree, setTree] = useState<MerkleTree | undefined>();
   const [redeemLoading, setRedeemLoading] = useState<boolean>();
+  const [redeemed, setRedeemed] = useState<boolean>();
 
   useEffect(() => {
     if (!secretBase64) {
@@ -112,6 +114,7 @@ const Redeem = () => {
 
     console.log(transaction);
     setRedeemLoading(false);
+    setRedeemed(true);
   }
 
   const onSecretChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -128,11 +131,11 @@ const Redeem = () => {
         <Text>{error}</Text>
       </Box>
       <Button
-        isDisabled={!context.provider || error !== undefined}
+        isDisabled={!context.provider || error !== undefined || redeemed}
         onClick={redeem}
         isLoading={redeemLoading}
       >
-        Redeem
+        {redeemed ? <CheckIcon/> : "Redeem"}
       </Button>
     </VStack>
   );
