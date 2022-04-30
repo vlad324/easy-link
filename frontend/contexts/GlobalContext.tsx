@@ -4,7 +4,7 @@ import { PoseidonHasher } from "../utils/hasher";
 import EasyLinkJson from "../contracts/EasyLink.sol/EasyLink.json";
 import EasyLinkTokenJson from "../contracts/EasyLinkToken.sol/EasyLinkToken.json";
 import { EasyLink, EasyLinkToken } from "../contracts/types";
-import { EASY_LINK_CONTRACT, EASY_LINK_EVENTS_KEY, ELT_TOKEN } from "../utils/constants";
+import { EASY_LINK_CONTRACT, EASY_LINK_DEPLOYMENT_BLOCK, EASY_LINK_EVENTS_KEY, ELT_TOKEN } from "../utils/constants";
 import { DepositEvent } from "../contracts/types/contracts/EasyLink";
 
 const buildPoseidon = require("circomlibjs").buildPoseidon;
@@ -40,7 +40,7 @@ export const GlobalContextProvider = ({ children }: any) => {
 
   const populateEvents = (el: EasyLink) => {
     console.log("populateEvents");
-    el.queryFilter(el.filters.Deposit(), 26147022)
+    el.queryFilter(el.filters.Deposit(), EASY_LINK_DEPLOYMENT_BLOCK)
       .then(events => {
         const mappedEvents = events.map((it: DepositEvent) => {
           return {
