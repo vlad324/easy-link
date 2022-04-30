@@ -3,9 +3,8 @@ import "@nomiclabs/hardhat-ethers"
 import { ethers } from "hardhat";
 import fs from "fs";
 
-export const deployToken = async () => {
-  const location = "./scripts/out/token.address";
-  if (fs.existsSync(location)) {
+export const deployToken = async (path: string) => {
+  if (fs.existsSync(path)) {
     console.log("Token already exists");
     return;
   }
@@ -15,10 +14,5 @@ export const deployToken = async () => {
 
   console.log("EasyLinkToken token deployed to:", easyLinkToken.address);
 
-  const outDir = "./scripts/out";
-  if (!fs.existsSync(outDir)) {
-    fs.mkdirSync(outDir);
-  }
-
-  fs.writeFileSync(location, easyLinkToken.address);
+  fs.writeFileSync(path, easyLinkToken.address);
 }

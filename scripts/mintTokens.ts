@@ -1,11 +1,11 @@
 import "@typechain/hardhat"
 import "@nomiclabs/hardhat-ethers"
-import { ethers } from "hardhat";
+import hre, { ethers } from "hardhat";
 import fs from "fs";
 import { EasyLinkToken } from "../artifacts/contracts/types";
 
 const mintTokens = async () => {
-  const tokenAddress = fs.readFileSync("./scripts/out/token.address", "utf8");
+  const tokenAddress = fs.readFileSync(`./scripts/out/${hre.network.name}/token.address`, "utf8");
   const EasyLinkToken = await ethers.getContractFactory("EasyLinkToken");
   const easyLinkToken = EasyLinkToken.attach(tokenAddress) as EasyLinkToken;
 

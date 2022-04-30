@@ -3,9 +3,8 @@ import "@nomiclabs/hardhat-ethers"
 import { ethers } from "hardhat";
 import fs from "fs";
 
-export const deployHasher = async () => {
-  const location = "./scripts/out/hasher.address";
-  if (fs.existsSync(location)) {
+export const deployHasher = async (path: string) => {
+  if (fs.existsSync(path)) {
     console.log("Hasher already exists");
     return;
   }
@@ -14,10 +13,5 @@ export const deployHasher = async () => {
   const hasher = await PoseidonHasher.deploy();
   console.log("PoseidonHasher deployed to:", hasher.address);
 
-  const outDir = "./scripts/out";
-  if (!fs.existsSync(outDir)) {
-    fs.mkdirSync(outDir);
-  }
-
-  fs.writeFileSync(location, hasher.address);
+  fs.writeFileSync(path, hasher.address);
 }

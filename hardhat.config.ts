@@ -18,6 +18,7 @@ require("dotenv").config();
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 const MUMBAI_PRIVATE_KEY = process.env.MUMBAI_PRIVATE_KEY;
+const HARMONY_PRIVATE_KEY = process.env.HARMONY_PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
   solidity: "0.8.13",
@@ -45,6 +46,10 @@ const config: HardhatUserConfig = {
     mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
       accounts: [`${MUMBAI_PRIVATE_KEY}`]
+    },
+    harmony_testnet_0: {
+      url: "https://api.s0.b.hmny.io",
+      accounts: [`${HARMONY_PRIVATE_KEY}`]
     }
   }
 }
