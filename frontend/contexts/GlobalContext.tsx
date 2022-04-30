@@ -50,7 +50,8 @@ export const GlobalContextProvider = ({ children }: any) => {
         });
 
         localStorage.setItem(EASY_LINK_EVENTS_KEY, JSON.stringify(mappedEvents));
-      });
+      })
+      .catch(console.log);
   }
 
   if (provider && !easyLink) {
