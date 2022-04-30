@@ -42,14 +42,17 @@ export const GlobalContextProvider = ({ children }: any) => {
   const [depositEvents, setDepositEvents] = useState<Event[]>([]);
 
   if (provider && !easyLink) {
+    console.log("easy link contract creation");
     setEasyLink(new ethers.Contract(EASY_LINK_CONTRACT, EasyLinkJson.abi, provider.getSigner(0)) as EasyLink);
   }
 
   if (provider && !easyLinkToken) {
+    console.log("token contract creation");
     setEasyLinkToken(new ethers.Contract(ELT_TOKEN, EasyLinkTokenJson.abi, provider.getSigner(0)) as EasyLinkToken);
   }
 
   if (easyLink && depositEvents.length === 0) {
+    console.log("event query");
     easyLink.queryFilter(easyLink.filters.Deposit(), 26144671)
       .then(events => {
         const map = events.map((it: DepositEvent) => {
