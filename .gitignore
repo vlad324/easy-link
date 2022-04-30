@@ -26,3 +26,4 @@ yarn-error.log*
 *.iml
 cache
 artifacts
+scripts/out
