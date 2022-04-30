@@ -47,7 +47,7 @@ const PayCommitment = (props: { commitment: BigNumber }) => {
   useEffect(() => {
     if (context.provider && context.easyLink) {
       context.easyLink.commitments(props.commitment)
-        .then(payed => {
+        .then((payed: boolean) => {
           setPayedPreviously(payed);
         })
         .catch(console.log);
