@@ -22,6 +22,9 @@ solves the problem of hiding financial history it creates other problems:
 - if you move tokens to your main wallet without going to the mixer - the sender would still be able to make the
   connection
 
+## How it works
+![img.png](diagram.png)
+
 ## Build the project
 
 ```
