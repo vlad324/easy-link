@@ -4,25 +4,29 @@ import base64url from "base64url";
 import { BigNumber } from "ethers";
 import UrlIsNotValid from "../../components/UrlIsNotValid";
 import PayCommitment from "../../components/PayCommitment";
+import { useEffect, useState } from "react";
 
 const Pay = () => {
   const router = useRouter();
   const { commitment } = router.query;
 
-  let rawCommitment;
-  if (commitment) {
-    try {
-      rawCommitment = BigNumber.from("0x" + base64url.decode(commitment as string));
-    } catch (e) {
-      console.log(e);
-      rawCommitment = BigNumber.from(0);
+  const [rawCommitment, setRawCommitment] = useState<BigNumber>(BigNumber.from(0));
+
+  useEffect(() => {
+    if (commitment) {
+      try {
+        setRawCommitment(BigNumber.from("0x" + base64url.decode(commitment as string)));
+      } catch (e) {
+        console.log(e);
+        setRawCommitment(BigNumber.from(0));
+      }
     }
-  }
+  }, [commitment]);
 
   return (
     <Center>
       {
-        rawCommitment && !rawCommitment.isZero() ?
+        !rawCommitment.isZero() ?
           <PayCommitment commitment={rawCommitment}/> :
           <UrlIsNotValid/>
       }
