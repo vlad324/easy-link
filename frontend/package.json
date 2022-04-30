@@ -16,10 +16,13 @@
     "base64url": "^3.0.1",
     "circomlibjs": "^0.1.2",
     "ethers": "^5.6.4",
+    "ffjavascript": "^0.2.52",
+    "fixed-merkle-tree": "^0.7.3",
     "framer-motion": "^6",
     "next": "12.1.5",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "snarkjs": "^0.4.16"
   },
   "devDependencies": {
     "@types/node": "17.0.30",

@@ -15,14 +15,16 @@ const Create = () => {
     if (!origin && window) {
       setOrigin(window.location.origin);
     }
-  }, [window])
+  })
 
-  const secret = randomBN();
   const nullifier = randomBN();
+  const secret = randomBN();
 
-  const commitment = hasher.hash(secret, nullifier).toHexString().slice(2);
+  const commitment = hasher.hash(nullifier, secret).toHexString().slice(2);
   const base64commitment = base64url.encode(commitment);
   const link = origin + "/pay/" + base64commitment;
+
+  const redeemSecret = base64url.encode(`${nullifier.toHexString()}#${secret.toHexString()}`);
 
   return (
     <Center>
@@ -36,6 +38,10 @@ const Create = () => {
           </Link>
         </Box>
         <Text>Share it with someone who owns you money</Text>
+        <Text>User this secret to redeem tokens after:</Text>
+        <Box bg={"#D3D3D3"} w={"45%"} borderRadius={"5px"} padding={"10px"}>
+          <Text noOfLines={[2, 3]}>{redeemSecret}</Text>
+        </Box>
       </VStack>
     </Center>
   );
