@@ -36,6 +36,12 @@ const config: HardhatUserConfig = {
     target: "ethers-v5"
   },
   networks: {
+    hardhat: {
+      mining: {
+        auto: false,
+        interval: [2000, 4000]
+      }
+    },
     mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
       accounts: [`${MUMBAI_PRIVATE_KEY}`]
@@ -87,7 +93,6 @@ subtask(TASK_COMPILE_HASHER)
     }
 
     fs.writeFileSync(outputFile, JSON.stringify(contract, null, 2));
-    // await hre.artifacts.saveArtifactAndDebugFile(contract);
   });
 
 task(TASK_COMPILE, "Compiles the entire project, building all artifacts")

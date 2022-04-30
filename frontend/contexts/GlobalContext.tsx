@@ -1,11 +1,11 @@
 import { createContext, useState } from "react";
 import { ethers } from "ethers";
 import { PoseidonHasher } from "../utils/hasher";
-import EasyLinkJson from "../contracts/EasyLink.json";
-import EasyLinkTokenJson from "../contracts/EasyLinkToken.json";
+import EasyLinkJson from "../contracts/EasyLink.sol/EasyLink.json";
+import EasyLinkTokenJson from "../contracts/EasyLinkToken.sol/EasyLinkToken.json";
 import { EasyLink, EasyLinkToken } from "../contracts/types";
 import { EASY_LINK_CONTRACT, ELT_TOKEN } from "../utils/constants";
-import { DepositEvent } from "../contracts/types/EasyLink";
+import { DepositEvent } from "../contracts/types/contracts/EasyLink";
 
 const buildPoseidon = require("circomlibjs").buildPoseidon;
 

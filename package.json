@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "circuit:build": "hardhat circom --verbose",
+    "build": "hardhat compile --verbose",
     "test": "hardhat test --bail"
   },
   "devDependencies": {

@@ -2,15 +2,15 @@ import "@nomiclabs/hardhat-ethers"
 import "@nomiclabs/hardhat-waffle"
 import { ethers } from "hardhat";
 import chai from "chai";
-import { PoseidonHasher } from "./poseidonHasher";
 import { EasyLink, EasyLinkToken, IPoseidonHasher, Verifier } from "../artifacts/contracts/types";
 // @ts-ignore
 import { buildPoseidon } from "circomlibjs";
-import { randomBN } from "./utils";
 import { solidity } from "ethereum-waffle";
 import { MerkleTree } from "fixed-merkle-tree";
 import { BigNumber, BigNumberish } from "ethers";
-import { generateProof } from "../utils/proof";
+import { generateProof } from "./proof";
+import { randomBN } from "../frontend/utils/random";
+import { PoseidonHasher } from "../frontend/utils/hasher";
 
 chai.use(solidity);
 

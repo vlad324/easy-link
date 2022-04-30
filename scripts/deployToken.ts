@@ -7,6 +7,7 @@ export const deployToken = async () => {
   const location = "./scripts/out/token.address";
   if (fs.existsSync(location)) {
     console.log("Token already exists");
+    return;
   }
 
   const EasyLinkToken = await ethers.getContractFactory("EasyLinkToken");
@@ -21,10 +22,3 @@ export const deployToken = async () => {
 
   fs.writeFileSync(location, easyLinkToken.address);
 }
-
-deployToken()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });

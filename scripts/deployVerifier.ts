@@ -7,6 +7,7 @@ export const deployVerifier = async () => {
   const location = "./scripts/out/verifier.address";
   if (fs.existsSync(location)) {
     console.log("Verifier already exists");
+    return;
   }
 
   const Verifier = await ethers.getContractFactory("Verifier");
@@ -20,10 +21,3 @@ export const deployVerifier = async () => {
 
   fs.writeFileSync(location, verifier.address);
 }
-
-deployVerifier()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });

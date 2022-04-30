@@ -6,9 +6,9 @@ import { BigNumber } from "ethers";
 import { buildPoseidon } from "circomlibjs";
 import { MerkleTree } from "fixed-merkle-tree";
 import chai from "chai";
-import { randomBN } from "./utils";
-import { PoseidonHasher } from "./poseidonHasher";
-import { generateProof, Input } from "../utils/proof";
+import { generateProof, Input } from "./proof";
+import { PoseidonHasher } from "../frontend/utils/hasher";
+import { randomBN } from "../frontend/utils/random";
 
 describe("Verifier", () => {
   let poseidon: PoseidonHasher;

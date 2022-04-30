@@ -7,6 +7,7 @@ export const deployHasher = async () => {
   const location = "./scripts/out/hasher.address";
   if (fs.existsSync(location)) {
     console.log("Hasher already exists");
+    return;
   }
 
   const PoseidonHasher = await ethers.getContractFactory("PoseidonHasher");
@@ -20,10 +21,3 @@ export const deployHasher = async () => {
 
   fs.writeFileSync(location, hasher.address);
 }
-
-deployHasher()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
