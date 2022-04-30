@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../contexts/GlobalContext";
 import { randomBN } from "../utils/random";
 import base64url from "base64url";
+import Link from "next/link";
 
 const Create = () => {
 
@@ -14,13 +15,14 @@ const Create = () => {
     if (!origin && window) {
       setOrigin(window.location.origin);
     }
-  })
+  }, [window])
 
   const secret = randomBN();
   const nullifier = randomBN();
 
   const commitment = hasher.hash(secret, nullifier).toHexString().slice(2);
   const base64commitment = base64url.encode(commitment);
+  const link = origin + "/pay/" + base64commitment;
 
   return (
     <Center>
@@ -29,7 +31,9 @@ const Create = () => {
           <Text>Your link to receive 1 ELT is:</Text>
         </Box>
         <Box>
-          <Text>{origin + "/pay/" + base64commitment}</Text>
+          <Link href={link}>
+            {link}
+          </Link>
         </Box>
         <Text>Share it with someone who owns you money</Text>
       </VStack>
