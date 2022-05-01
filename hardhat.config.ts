@@ -56,7 +56,8 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      polygonMumbai: `${POLYGON_SCAN_API_KEY}`
+      polygonMumbai: `${POLYGON_SCAN_API_KEY}`,
+      harmonyTest: "harmonyTest",
     }
   }
 }
