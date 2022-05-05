@@ -1,12 +1,13 @@
 import { Box, Button, Text, Textarea, VStack } from "@chakra-ui/react"
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { GlobalContext, LocalStoredEvent } from "../contexts/GlobalContext";
+import { GlobalContext } from "../contexts/GlobalContext";
 import base64url from "base64url";
 import { BigNumber } from "ethers";
 import { MerkleTree } from "fixed-merkle-tree";
 import { generateProof } from "../utils/proof";
 import { CheckIcon } from "@chakra-ui/icons";
 import { EASY_LINK_EVENTS_KEY } from "../utils/constants";
+import { LocalStoredEvent } from "../utils/events";
 
 const Redeem = () => {
 
@@ -59,7 +60,7 @@ const Redeem = () => {
 
     const commitment = context.hasher.hash(BigNumber.from(nullifierLocal), BigNumber.from(secretLocal)).toString();
 
-    const events = JSON.parse(localStorage.getItem(EASY_LINK_EVENTS_KEY) || "[]") as LocalStoredEvent[]
+    const events = JSON.parse(localStorage.getItem(EASY_LINK_EVENTS_KEY) || "[]") as LocalStoredEvent[];
     const paidCommitment = events.filter(it => it.commitment === commitment);
     if (paidCommitment.length == 0) {
       setError("Related payment link wasn't payed yet");
