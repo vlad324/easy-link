@@ -9,8 +9,8 @@ import { solidity } from "ethereum-waffle";
 import { MerkleTree } from "fixed-merkle-tree";
 import { BigNumber, BigNumberish } from "ethers";
 import { generateProof } from "./proof";
-import { randomBN } from "../frontend/utils/random";
-import { PoseidonHasher } from "../frontend/utils/hasher";
+import { randomBN } from "../frontend/src/utils/random";
+import { PoseidonHasher } from "../frontend/src/utils/hasher";
 
 chai.use(solidity);
 

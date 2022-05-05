@@ -43,7 +43,7 @@ yarn run test
 
 ```
 cd frontend && yarn
-rm -rf contracts && cp -r ../artifacts/contracts .
+rm -rf ./src/contracts && cp -r ../artifacts/contracts ./src
 ```
 
 ## Start app locally

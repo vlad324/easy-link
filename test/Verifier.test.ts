@@ -7,8 +7,8 @@ import { buildPoseidon } from "circomlibjs";
 import { MerkleTree } from "fixed-merkle-tree";
 import chai from "chai";
 import { generateProof, Input } from "./proof";
-import { PoseidonHasher } from "../frontend/utils/hasher";
-import { randomBN } from "../frontend/utils/random";
+import { PoseidonHasher } from "../frontend/src/utils/hasher";
+import { randomBN } from "../frontend/src/utils/random";
 
 describe("Verifier", () => {
   let poseidon: PoseidonHasher;

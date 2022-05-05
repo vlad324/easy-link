@@ -21,7 +21,7 @@ export const GlobalContext = createContext<Context>({
 
 export interface LocalStoredEvent {
   commitment: string,
-  index: number
+  index: number,
 }
 
 export interface Context {
