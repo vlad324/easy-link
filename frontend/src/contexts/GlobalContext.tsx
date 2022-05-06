@@ -1,18 +1,19 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo } from "react";
 import { ethers } from "ethers";
 import { PoseidonHasher } from "../utils/hasher";
-import EasyLinkJson from "../contracts/EasyLink.sol/EasyLink.json";
-import EasyLinkTokenJson from "../contracts/EasyLinkToken.sol/EasyLinkToken.json";
 import { EasyLink, EasyLinkToken } from "../contracts/types";
-import { EASY_LINK_CONTRACT, ELT_TOKEN } from "../utils/constants";
-import { populateEvents } from "../utils/events";
+import { useMetamaskProvider } from "../hooks/useMetamaskProvider";
+import { CONTRACT_TO_ABI, CONTRACTS, easyLink, easyLinkToken } from "../utils/contracts";
 
 const buildPoseidon = require("circomlibjs").buildPoseidon;
 
 const hasher = new PoseidonHasher(await buildPoseidon());
 export const GlobalContext = createContext<Context>({
   provider: undefined,
-  setProvider: (p) => {
+  chainId: undefined,
+  connect: () => {
+  },
+  switchChain: () => {
   },
   hasher: hasher,
   easyLink: undefined,
@@ -21,7 +22,9 @@ export const GlobalContext = createContext<Context>({
 
 export interface Context {
   provider: ethers.providers.Web3Provider | undefined,
-  setProvider: (p: ethers.providers.Web3Provider) => void,
+  chainId: string | undefined,
+  connect: () => void,
+  switchChain: (chainId: number) => void,
   hasher: PoseidonHasher,
   easyLink: EasyLink | undefined
   easyLinkToken: EasyLinkToken | undefined
@@ -29,30 +32,47 @@ export interface Context {
 
 export const GlobalContextProvider = ({ children }: any) => {
 
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
-  const [easyLink, setEasyLink] = useState<EasyLink>();
-  const [easyLinkToken, setEasyLinkToken] = useState<EasyLinkToken>();
+  const [provider, chainId, connect, switchChain] = useMetamaskProvider();
 
-  if (provider && !easyLink) {
+  const easyLinkContract = useMemo(() => {
     console.log("easy link contract creation");
-    const contract = new ethers.Contract(EASY_LINK_CONTRACT, EasyLinkJson.abi, provider.getSigner(0)) as EasyLink;
-    setEasyLink(contract);
-    populateEvents(contract, provider).catch(console.log);
-    setInterval(() => populateEvents(contract, provider), 5000)
-  }
+    if (!provider) {
+      return;
+    }
 
-  if (provider && !easyLinkToken) {
-    console.log("token contract creation");
-    setEasyLinkToken(new ethers.Contract(ELT_TOKEN, EasyLinkTokenJson.abi, provider.getSigner(0)) as EasyLinkToken);
-  }
+    const contract = CONTRACTS[easyLink][chainId];
+    if (!contract) {
+      console.log("Can't find contract for", easyLink, chainId);
+      return;
+    }
+
+    return new ethers.Contract(contract.address, CONTRACT_TO_ABI[easyLink], provider.getSigner(0)) as EasyLink;
+  }, [provider, chainId]);
+
+  const easyLinkTokenContract = useMemo(() => {
+    console.log("easy link contract creation");
+    if (!provider) {
+      return;
+    }
+
+    const contract = CONTRACTS[easyLinkToken][chainId];
+    if (!contract) {
+      console.log("Can't find contract for", easyLinkToken, chainId);
+      return;
+    }
+
+    return new ethers.Contract(contract.address, CONTRACT_TO_ABI[easyLinkToken], provider.getSigner(0)) as EasyLinkToken;
+  }, [provider, chainId]);
 
   return (
     <GlobalContext.Provider value={{
       provider,
-      setProvider,
+      chainId,
+      connect,
+      switchChain,
       hasher,
-      easyLink,
-      easyLinkToken
+      easyLink: easyLinkContract,
+      easyLinkToken: easyLinkTokenContract
     }}>
       {children}
     </GlobalContext.Provider>

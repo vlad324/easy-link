@@ -1,30 +1,33 @@
-import { Box, Center, Text, VStack, Divider } from "@chakra-ui/react"
+import { Box, Center, Divider, Text, VStack } from "@chakra-ui/react"
 import { useContext, useEffect, useState } from "react";
-import { GlobalContext } from "../contexts/GlobalContext";
 import { randomBN } from "../utils/random";
 import base64url from "base64url";
 import Link from "next/link";
+import { GlobalContext } from "../contexts/GlobalContext";
 
 const Create = () => {
 
   const { hasher } = useContext(GlobalContext);
 
   const [origin, setOrigin] = useState<string>();
+  const [link, setLink] = useState<string>();
+  const [redeemSecret, setRedeemSecret] = useState<string>();
 
   useEffect(() => {
     if (!origin && window) {
       setOrigin(window.location.origin);
     }
-  })
 
-  const nullifier = randomBN();
-  const secret = randomBN();
+    if (origin && hasher) {
+      const nullifier = randomBN();
+      const secret = randomBN();
 
-  const commitment = hasher.hash(nullifier, secret).toHexString().slice(2);
-  const base64commitment = base64url.encode(commitment);
-  const link = origin + "/pay/" + base64commitment;
-
-  const redeemSecret = base64url.encode(`${nullifier.toHexString()}#${secret.toHexString()}`);
+      const commitment = hasher.hash(nullifier, secret).toHexString().slice(2);
+      const base64commitment = base64url.encode(commitment);
+      setLink(origin + "/pay/" + base64commitment);
+      setRedeemSecret(base64url.encode(`${nullifier.toHexString()}#${secret.toHexString()}`));
+    }
+  }, [origin, hasher])
 
   return (
     <Center>
@@ -33,9 +36,11 @@ const Create = () => {
           <Text>Your link to receive 1 ELT is:</Text>
         </Box>
         <Box>
-          <Link href={link}>
-            {link}
-          </Link>
+          {link &&
+            <Link href={link}>
+              {link}
+            </Link>
+          }
         </Box>
         <Text>Share it with someone who owns you money</Text>
         <Divider/>

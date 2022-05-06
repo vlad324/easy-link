@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Link, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Link, Select, Text } from '@chakra-ui/react';
 import { useRouter } from "next/router";
+import { shortenAddress } from "../utils/address";
+import { CHAINS } from "../utils/chains";
 import { GlobalContext } from "../contexts/GlobalContext";
-import { ethers } from "ethers";
 
 const Header = () => {
   const router = useRouter();
 
-  const { provider, setProvider } = useContext(GlobalContext);
+  const { provider, chainId, connect, switchChain } = useContext(GlobalContext);
   const [account, setAccount] = useState<string>();
 
   useEffect(() => {
@@ -20,8 +21,7 @@ const Header = () => {
   })
 
   const connectWallet = async () => {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-    setProvider(new ethers.providers.Web3Provider(window.ethereum));
+    await connect();
   }
 
   return (
@@ -39,9 +39,27 @@ const Header = () => {
           </Link>
         </Center>
         <Center textAlign="right">
+          <Box>
+            <Select isDisabled={!provider}
+                    value={chainId}
+                    paddingRight={'10px'}
+                    onChange={(e) => switchChain(parseInt(e.target.value))}>
+              {
+                Object.keys(CHAINS)
+                  .map(currentChainId => {
+                    const chain = CHAINS[currentChainId];
+                    return (
+                      <option key={currentChainId} value={currentChainId}>
+                        {chain.chainName}
+                      </option>
+                    )
+                  })
+              }
+            </Select>
+          </Box>
           {
             account ?
-              "" + account :
+              shortenAddress(account) :
               <Button onClick={connectWallet} textAlign="center">Connect wallet</Button>
           }
         </Center>

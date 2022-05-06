@@ -1,4 +1,3 @@
-export const EASY_LINK_EVENTS_KEY = "easy-link-events";
+export const EASY_LINK_EVENTS_KEY = "easy-link:events";
+export const EASY_LINK_EVENTS_LAST_BLOCK_KEY = "easy-link:events-last-block";
 export const EASY_LINK_DEPLOYMENT_BLOCK = 24697828;
-export const EASY_LINK_CONTRACT = "0x8d29119bB6f610d0B830A5af198fb6e8607bf947";
-export const ELT_TOKEN = "0x99BD0Ee8B9aeE9991Ae02a1ccfA34DF4F7d9f896";

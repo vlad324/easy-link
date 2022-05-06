@@ -53,11 +53,10 @@ const PayCommitment = (props: { commitment: BigNumber }) => {
         .catch(console.log);
 
     }
-  }, [context.provider, context.easyLink]);
+  }, [context.provider, context.easyLink, props.commitment]);
 
   const connectWallet = async () => {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-    context.setProvider(new ethers.providers.Web3Provider(window.ethereum));
+    await context.connect();
   };
 
   const approveToken = async () => {
