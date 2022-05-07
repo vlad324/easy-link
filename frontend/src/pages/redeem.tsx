@@ -1,4 +1,4 @@
-import { Box, Button, Text, Textarea, VStack } from "@chakra-ui/react"
+import { Box, Button, Center, Text, Textarea, VStack } from "@chakra-ui/react"
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../contexts/GlobalContext";
 import base64url from "base64url";
@@ -126,21 +126,23 @@ const Redeem = () => {
   }
 
   return (
-    <VStack>
-      <Box w={"50%"}>
-        <Textarea onChange={onSecretChange} placeholder='Please provider a secret to redeem tokens'/>
-      </Box>
-      <Box>
-        <Text>{error}</Text>
-      </Box>
-      <Button
-        isDisabled={!context.provider || error !== undefined || redeemed}
-        onClick={redeem}
-        isLoading={redeemLoading}
-      >
-        {redeemed ? <CheckIcon/> : "Redeem"}
-      </Button>
-    </VStack>
+    <Center>
+      <VStack w={"100%"}>
+        <Box w={"50%"}>
+          <Textarea onChange={onSecretChange} placeholder='Please provider a secret to redeem tokens'/>
+        </Box>
+        <Box>
+          <Text>{error}</Text>
+        </Box>
+        <Button
+          isDisabled={!context.provider || error !== undefined || redeemed}
+          onClick={redeem}
+          isLoading={redeemLoading}
+        >
+          {redeemed ? <CheckIcon/> : "Redeem"}
+        </Button>
+      </VStack>
+    </Center>
   );
 };
 
