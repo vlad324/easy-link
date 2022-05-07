@@ -52,7 +52,7 @@ const Header = () => {
         bg={'gray.900'}
         display="flex"
         justifyContent={"space-between"}
-        px="200px"
+        px="10%"
         py="20px"
         borderBottomWidth="1px"
       >

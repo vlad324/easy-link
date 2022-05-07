@@ -58,6 +58,8 @@ const Redeem = () => {
     const paidCommitment = events.filter(it => it.commitment === commitment);
     if (paidCommitment.length == 0) {
       setError("Related payment link wasn't payed yet");
+      setRedeemLoading(false);
+      return;
     }
 
     setError(undefined);
