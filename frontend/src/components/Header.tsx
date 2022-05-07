@@ -1,9 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Button, Center, Link, Select, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Link, Text } from '@chakra-ui/react';
 import { useRouter } from "next/router";
 import { shortenAddress } from "../utils/address";
-import { CHAINS } from "../utils/chains";
 import { GlobalContext } from "../contexts/GlobalContext";
+import { GroupBase, OnChangeValue, OptionBase, Select } from "chakra-react-select";
+import { CHAINS } from "../utils/chains";
+
+interface NetworkOption extends OptionBase {
+  label: string;
+  value: string;
+}
 
 const Header = () => {
   const router = useRouter();
@@ -24,6 +30,22 @@ const Header = () => {
     await connect();
   }
 
+  const switchChainLocal = (e: OnChangeValue<NetworkOption, false>) => {
+    if (!e) {
+      return;
+    }
+    switchChain(parseInt(e.value));
+  }
+
+  const options = Object.keys(CHAINS)
+    .map(it => {
+      const chain = CHAINS[it];
+      return {
+        label: chain.chainName,
+        value: it
+      } as NetworkOption;
+    })
+
   return (
     <>
       <Box
@@ -40,26 +62,27 @@ const Header = () => {
           </Link>
         </Center>
         <Center textAlign="right">
-          <Box>
-            <Select
-              border='2px solid'
-              isDisabled={!provider}
-              value={chainId}
-              paddingRight={'10px'}
-              onChange={(e) => switchChain(parseInt(e.target.value))}>
-              {
-                Object.keys(CHAINS)
-                  .map(currentChainId => {
-                    const chain = CHAINS[currentChainId];
-                    return (
-                      <option key={currentChainId} value={currentChainId}>
-                        {chain.chainName}
-                      </option>
-                    )
-                  })
-              }
-            </Select>
-          </Box>
+          <Select<NetworkOption, false, GroupBase<NetworkOption>>
+            isSearchable={false}
+            blurInputOnSelect={true}
+            isDisabled={!provider}
+            isInvalid={provider && options.filter(it => it.value === chainId).length === 0}
+            value={options.filter(it => it.value === chainId)}
+            options={options}
+            onChange={switchChainLocal}
+            chakraStyles={{
+              container: (provided) => ({
+                ...provided,
+                w: '13rem',
+              }),
+              menuList: (provided) => ({
+                ...provided,
+                minW: '',
+              }),
+            }}
+            placeholder="Select network"
+            closeMenuOnSelect={true}
+            selectedOptionColor="green"/>
           <Center w={'13rem'}>
             {
               account ?

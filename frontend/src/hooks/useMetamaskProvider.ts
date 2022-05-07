@@ -37,7 +37,6 @@ export const useMetamaskProvider = (): [
 
     const requestedChainIdHex = '0x' + requestedChainId.toString(16);
     if (await getChainId() === requestedChainIdHex) {
-      debugger;
       return;
     }
 
