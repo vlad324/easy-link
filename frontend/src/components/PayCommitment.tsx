@@ -37,6 +37,8 @@ const PayCommitment = (props: { commitment: BigNumber }) => {
         .then(allowance => {
           if (allowance.gte(ethers.utils.parseEther("1"))) {
             setTokenApproved(true);
+          } else {
+            setTokenApproved(false);
           }
         })
         .catch(console.log);
