@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
+      <Fonts/>
       <GlobalContextProvider>
         <Layout>
           <Component {...pageProps} />
