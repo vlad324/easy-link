@@ -39,12 +39,6 @@ const config: HardhatUserConfig = {
     target: "ethers-v5"
   },
   networks: {
-    hardhat: {
-      mining: {
-        auto: false,
-        interval: [2000, 4000]
-      }
-    },
     polygonMumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
       accounts: [`${MUMBAI_PRIVATE_KEY}`]

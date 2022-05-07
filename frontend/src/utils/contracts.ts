@@ -8,15 +8,18 @@ export const CONTRACTS: {
   [name: string]: {
     [chainId: string]: {
       address: string,
+      deploymentBlock?: number
     }
   }
 } = {
   [easyLink]: {
     '80001': {
       address: '0xbe9EFd3c826C9bDF14c8F175e07b0B40543982fF',
+      deploymentBlock: 26147022
     },
     '1666700000': {
       address: '0x8d29119bB6f610d0B830A5af198fb6e8607bf947',
+      deploymentBlock: 24697828
     },
   },
   [easyLinkToken]: {
@@ -29,7 +32,7 @@ export const CONTRACTS: {
   }
 }
 
-export const CONTRACT_TO_ABI:{[n: string]: any} = {
+export const CONTRACT_TO_ABI: { [n: string]: any } = {
   [easyLink]: [...EasyLink.abi],
   [easyLinkToken]: [...EasyLinkToken.abi]
 }

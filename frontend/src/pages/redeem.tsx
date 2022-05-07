@@ -1,13 +1,13 @@
 import { Box, Button, Center, Text, Textarea, VStack } from "@chakra-ui/react"
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../contexts/GlobalContext";
-import base64url from "base64url";
 import { BigNumber } from "ethers";
 import { MerkleTree } from "fixed-merkle-tree";
 import { generateProof } from "../utils/proof";
 import { CheckIcon } from "@chakra-ui/icons";
-import { EASY_LINK_EVENTS_KEY } from "../utils/constants";
-import { LocalStoredEvent } from "../utils/events";
+import { populateEvents } from "../utils/events";
+import { LocalStoredEvent } from "../utils/storage";
+import { decodeNote } from "../utils/note";
 
 const Redeem = () => {
 
@@ -17,9 +17,26 @@ const Redeem = () => {
   const [error, setError] = useState<string>();
   const [secret, setSecret] = useState<string>();
   const [nullifier, setNullifier] = useState<string>();
-  const [tree, setTree] = useState<MerkleTree | undefined>();
   const [redeemLoading, setRedeemLoading] = useState<boolean>();
   const [redeemed, setRedeemed] = useState<boolean>();
+
+  const [eventsLoading, setEventsLoading] = useState<boolean>(false)
+  const [events, setEvents] = useState<LocalStoredEvent[]>([]);
+
+  useEffect(() => {
+    if (!context.easyLink || !context.chainId || !context.provider) {
+      console.log("context.easyLink", context.easyLink);
+      console.log("context.chainId", context.chainId);
+      console.log("context.provider", context.provider);
+      return;
+    }
+
+    setEventsLoading(true);
+    populateEvents(context.easyLink, context.chainId, context.provider)
+      .then(events => setEvents(events))
+      .catch(console.log)
+      .finally(() => setEventsLoading(false));
+  }, [context.easyLink, context.chainId, context.provider]);
 
   useEffect(() => {
     if (!secretBase64) {
@@ -27,73 +44,48 @@ const Redeem = () => {
     }
 
     setRedeemLoading(true);
-    const decoded = base64url.decode(secretBase64);
-    const dividerIndex = decoded.indexOf("#");
-
-    if (dividerIndex == -1) {
+    const [nullifierLocal, secretLocal] = decodeNote(secretBase64);
+    if (!nullifierLocal || !secretLocal) {
       setError("Provided secret is not valid");
       setRedeemLoading(false);
       return;
     }
 
-    let nullifierLocal;
-    let secretLocal;
-    try {
-      nullifierLocal = decoded.slice(0, dividerIndex);
-      setNullifier(BigNumber.from(nullifierLocal).toString());
-
-      secretLocal = decoded.slice(dividerIndex + 1);
-      setSecret(BigNumber.from(secretLocal).toString());
-
-    } catch (e) {
-      console.log(e);
-      setError("Provided secret is not valid");
-      setRedeemLoading(false);
-      return;
-    }
-
-    if (!context.easyLink) {
-      console.log("No EasyLink contract");
-      setRedeemLoading(false);
-      return;
-    }
+    setNullifier(nullifierLocal.toString());
+    setSecret(secretLocal.toString());
 
     const commitment = context.hasher.hash(BigNumber.from(nullifierLocal), BigNumber.from(secretLocal)).toString();
-
-    const events = JSON.parse(localStorage.getItem(EASY_LINK_EVENTS_KEY) || "[]") as LocalStoredEvent[];
     const paidCommitment = events.filter(it => it.commitment === commitment);
     if (paidCommitment.length == 0) {
       setError("Related payment link wasn't payed yet");
-      setRedeemLoading(false);
+    }
+
+    setError(undefined);
+    setRedeemLoading(false);
+  }, [secretBase64, events, context.hasher]);
+
+  const redeem = async () => {
+    if (!context.easyLink || !context.chainId) {
+      console.log("redeem() context.easyLink", context.easyLink);
+      console.log("redeem() context.chainId", context.chainId);
       return;
     }
+
+    if (!secret || !nullifier) {
+      console.log("redeem() nullifier", nullifier);
+      console.log("redeem() secret", secret);
+      return;
+    }
+
+    setRedeemLoading(true);
+    const commitment = context.hasher.hash(BigNumber.from(nullifier), BigNumber.from(secret)).toString();
 
     const tree = new MerkleTree(10, [], {
       hashFunction: (a, b) => context.hasher.hash(BigNumber.from(a), BigNumber.from(b)).toString(),
       zeroElement: "12339540769637658105100870666479336797812683353093222300453955367174479050262"
     });
     tree.bulkInsert(events.map(it => it.commitment));
-    setTree(tree);
 
-    setError(undefined);
-    setRedeemLoading(false);
-  }, [secretBase64]);
-
-  const redeem = async () => {
-    if (!context.easyLink) {
-      console.log("No EasyLink contract");
-      return;
-    }
-
-    if (!tree || !secret || !nullifier) {
-      console.log("tree", tree);
-      console.log("nullifier", nullifier);
-      console.log("secret", secret);
-      return;
-    }
-
-    setRedeemLoading(true);
-    const commitment = context.hasher.hash(BigNumber.from(nullifier), BigNumber.from(secret)).toString();
     const merkleProof = tree.proof(commitment);
 
     const address = await context.provider?.getSigner(0).getAddress() as string;
@@ -129,7 +121,9 @@ const Redeem = () => {
     <Center>
       <VStack w={"100%"}>
         <Box w={"50%"}>
-          <Textarea onChange={onSecretChange} placeholder='Please provider a secret to redeem tokens'/>
+          <Textarea onChange={onSecretChange}
+                    isDisabled={eventsLoading || !context.provider}
+                    placeholder='Please provider a secret to redeem tokens'/>
         </Box>
         <Box>
           <Text>{error}</Text>
