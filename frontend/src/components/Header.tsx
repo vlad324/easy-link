@@ -27,6 +27,7 @@ const Header = () => {
   return (
     <>
       <Box
+        bg={'gray.900'}
         display="flex"
         justifyContent={"space-between"}
         px="200px"
@@ -40,10 +41,12 @@ const Header = () => {
         </Center>
         <Center textAlign="right">
           <Box>
-            <Select isDisabled={!provider}
-                    value={chainId}
-                    paddingRight={'10px'}
-                    onChange={(e) => switchChain(parseInt(e.target.value))}>
+            <Select
+              border='2px solid'
+              isDisabled={!provider}
+              value={chainId}
+              paddingRight={'10px'}
+              onChange={(e) => switchChain(parseInt(e.target.value))}>
               {
                 Object.keys(CHAINS)
                   .map(currentChainId => {
@@ -57,11 +60,13 @@ const Header = () => {
               }
             </Select>
           </Box>
-          {
-            account ?
-              shortenAddress(account) :
-              <Button onClick={connectWallet} textAlign="center">Connect wallet</Button>
-          }
+          <Center w={'13rem'}>
+            {
+              account ?
+                shortenAddress(account) :
+                <Button onClick={connectWallet} textAlign="center">Connect wallet</Button>
+            }
+          </Center>
         </Center>
       </Box>
     </>

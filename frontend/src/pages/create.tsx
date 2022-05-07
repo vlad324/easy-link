@@ -35,7 +35,7 @@ const Create = () => {
         <Box>
           <Text>Your link to receive 1 ELT is:</Text>
         </Box>
-        <Box>
+        <Box bg={'gray.700'} borderRadius={"5px"} padding={"10px"}>
           {link &&
             <Link href={link}>
               {link}
@@ -45,7 +45,7 @@ const Create = () => {
         <Text>Share it with someone who owns you money</Text>
         <Divider/>
         <Text>Use this secret to redeem tokens later:</Text>
-        <Box bg={"#D3D3D3"} w={"45%"} borderRadius={"5px"} padding={"10px"}>
+        <Box bg={'gray.700'} w={"40%"} borderRadius={"5px"} padding={"10px"}>
           <Text noOfLines={[2, 3]}>{redeemSecret}</Text>
         </Box>
       </VStack>

@@ -15,10 +15,10 @@ a {
     box-sizing: border-box;
 }
 
-html, body, #__next, main {
+html, body, #__next {
     height: 100%;
 }
 
-main > div {
-    height: 70%;
+main, main > div {
+    height: 80%;
 }

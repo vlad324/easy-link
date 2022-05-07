@@ -129,7 +129,7 @@ const Redeem = () => {
           <Text>{error}</Text>
         </Box>
         <Button
-          isDisabled={!context.provider || error !== undefined || redeemed}
+          isDisabled={!context.provider || error !== undefined || redeemed || !secretBase64}
           onClick={redeem}
           isLoading={redeemLoading}
         >
