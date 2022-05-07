@@ -72,9 +72,12 @@ const PayCommitment = (props: { commitment: BigNumber }) => {
     }
 
     setApproveLoading(true);
-    const transaction = await context.easyLinkToken.approve(context.easyLink.address, ethers.utils.parseEther("1"));
-    await transaction.wait(1);
-    setApproveLoading(false);
+    try {
+      const transaction = await context.easyLinkToken.approve(context.easyLink.address, ethers.utils.parseEther("1"));
+      await transaction.wait(1);
+    } finally {
+      setApproveLoading(false);
+    }
 
     setTokenApproved(true);
   };
@@ -86,9 +89,12 @@ const PayCommitment = (props: { commitment: BigNumber }) => {
     }
 
     setPayLoading(true);
-    const transaction = await context.easyLink.deposit(props.commitment);
-    await transaction.wait(1);
-    setPayLoading(false);
+    try {
+      const transaction = await context.easyLink.deposit(props.commitment);
+      await transaction.wait(1);
+    } finally {
+      setPayLoading(false);
+    }
 
     setPayed(true);
   }
