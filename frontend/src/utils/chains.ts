@@ -29,7 +29,7 @@ export const CHAINS: {
     testnet: true,
   },
   [HarmonyMainnet]: {
-    chainName: 'Harmony Mainnet',
+    chainName: 'Harmony',
     rpcUrl: 'https://api.harmony.one',
     blockExplorerUrl: 'https://explorer.harmony.one/',
     nativeCurrency: 'ONE',

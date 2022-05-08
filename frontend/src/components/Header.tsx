@@ -18,6 +18,7 @@ const Header = () => {
   const { provider, chainId, connect, switchChain, easyLinkToken: easyLinkToken } = useContext(GlobalContext);
   const [account, setAccount] = useState<string>();
   const [mintLoading, setMintLoading] = useState<boolean>();
+  const [networkOptions, setNetworkOptions] = useState<GroupBase<NetworkOption>[]>([]);
 
   useEffect(() => {
     if (!account && provider) {
@@ -54,14 +55,33 @@ const Header = () => {
     }
   }
 
-  const options = Object.keys(CHAINS)
-    .map(it => {
-      const chain = CHAINS[it];
-      return {
-        label: chain.chainName,
-        value: it
-      } as NetworkOption;
+  useEffect(() => {
+    const mainNetworks: NetworkOption[] = [];
+    const testNetworks: NetworkOption[] = [];
+    Object.entries(CHAINS).forEach(entry => {
+      const option = {
+        label: entry[1].chainName,
+        value: entry[0]
+      };
+
+      if (entry[1].testnet) {
+        testNetworks.push(option);
+      } else {
+        mainNetworks.push(option)
+      }
     })
+
+    setNetworkOptions([
+      {
+        label: "mainnets",
+        options: mainNetworks
+      },
+      {
+        label: "testnets",
+        options: testNetworks
+      }
+    ]);
+  }, []);
 
   return (
     <>
@@ -89,9 +109,9 @@ const Header = () => {
             isSearchable={false}
             blurInputOnSelect={true}
             isDisabled={!provider}
-            isInvalid={provider && options.filter(it => it.value === chainId).length === 0}
-            value={options.filter(it => it.value === chainId)}
-            options={options}
+            isInvalid={provider && networkOptions.flatMap(it => it.options).filter(it => it.value === chainId).length === 0}
+            value={networkOptions.flatMap(it => it.options).filter(it => it.value === chainId)}
+            options={networkOptions}
             onChange={switchChainLocal}
             chakraStyles={{
               container: (provided) => ({
