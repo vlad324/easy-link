@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { shortenAddress } from "../utils/address";
 import { GlobalContext } from "../contexts/GlobalContext";
 import { GroupBase, OnChangeValue, OptionBase, Select } from "chakra-react-select";
-import { CHAINS } from "../utils/chains";
+import { CHAINS, isTestnet } from "../utils/chains";
+import { ethers } from "ethers";
 
 interface NetworkOption extends OptionBase {
   label: string;
@@ -14,8 +15,9 @@ interface NetworkOption extends OptionBase {
 const Header = () => {
   const router = useRouter();
 
-  const { provider, chainId, connect, switchChain } = useContext(GlobalContext);
+  const { provider, chainId, connect, switchChain, easyLinkToken: easyLinkToken } = useContext(GlobalContext);
   const [account, setAccount] = useState<string>();
+  const [mintLoading, setMintLoading] = useState<boolean>();
 
   useEffect(() => {
     if (!account && provider) {
@@ -35,6 +37,21 @@ const Header = () => {
       return;
     }
     switchChain(parseInt(e.value));
+  }
+
+  const getTestTokens = async () => {
+    if (!easyLinkToken) {
+      console.log("getTestTokens() no easyLinkToken");
+      return;
+    }
+
+    setMintLoading(true);
+    try {
+      const mint = await easyLinkToken.mint(ethers.utils.parseEther("10"));
+      await mint.wait(1);
+    } finally {
+      setMintLoading(false);
+    }
   }
 
   const options = Object.keys(CHAINS)
@@ -62,6 +79,11 @@ const Header = () => {
           </Link>
         </Center>
         <Center textAlign="right">
+          {
+            isTestnet(chainId || "-1") && <Center w={'13rem'}>
+              <Button isLoading={mintLoading} onClick={getTestTokens}>Get test ELT</Button>
+            </Center>
+          }
           <Select<NetworkOption, false, GroupBase<NetworkOption>>
             isSearchable={false}
             blurInputOnSelect={true}

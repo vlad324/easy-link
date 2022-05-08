@@ -1,5 +1,3 @@
-import { BigNumber } from "ethers";
-
 export const CHAINS: {
   [key: string]: {
     chainName: string,
@@ -7,6 +5,7 @@ export const CHAINS: {
     blockExplorerUrl: string,
     nativeCurrency: string,
     nativeCurrencyDecimals: number,
+    testnet: boolean,
   }
 } = {
   '80001': {
@@ -15,6 +14,7 @@ export const CHAINS: {
     blockExplorerUrl: 'https://mumbai.polygonscan.com/',
     nativeCurrency: 'MATIC',
     nativeCurrencyDecimals: 18,
+    testnet: true,
   },
   '1666700000': {
     chainName: 'Harmony Testnet',
@@ -22,8 +22,10 @@ export const CHAINS: {
     blockExplorerUrl: 'https://explorer.pops.one/',
     nativeCurrency: 'ONE',
     nativeCurrencyDecimals: 18,
+    testnet: true,
   },
 }
 
-export const SUPPORTED_CHAIN_IDS_HEX = Object.keys(CHAINS)
-  .map(chainId => BigNumber.from(chainId).toHexString())
+export const isTestnet = (chainId: string): boolean => {
+  return CHAINS[chainId]?.testnet || false;
+}
