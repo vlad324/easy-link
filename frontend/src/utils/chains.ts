@@ -1,5 +1,6 @@
 export const PolygonMumbai = '80001';
 export const HarmonyTestnet = '1666700000';
+export const HarmonyMainnet = '1666600000';
 
 export const CHAINS: {
   [key: string]: {
@@ -26,6 +27,14 @@ export const CHAINS: {
     nativeCurrency: 'ONE',
     nativeCurrencyDecimals: 18,
     testnet: true,
+  },
+  [HarmonyMainnet]: {
+    chainName: 'Harmony Mainnet',
+    rpcUrl: 'https://api.harmony.one',
+    blockExplorerUrl: 'https://explorer.harmony.one/',
+    nativeCurrency: 'ONE',
+    nativeCurrencyDecimals: 18,
+    testnet: false,
   },
 }
 

@@ -46,12 +46,17 @@ const config: HardhatUserConfig = {
     harmonyTest: {
       url: "https://api.s0.b.hmny.io",
       accounts: [`${HARMONY_PRIVATE_KEY}`]
+    },
+    harmony: {
+      url: "https://api.harmony.one",
+      accounts: [`${HARMONY_PRIVATE_KEY}`]
     }
   },
   etherscan: {
     apiKey: {
       polygonMumbai: `${POLYGON_SCAN_API_KEY}`,
       harmonyTest: "harmonyTest",
+      harmony: "harmony",
     }
   }
 }
