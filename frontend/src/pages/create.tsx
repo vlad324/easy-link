@@ -7,7 +7,7 @@ import { GlobalContext } from "../contexts/GlobalContext";
 
 const Create = () => {
 
-  const { hasher } = useContext(GlobalContext);
+  const { symbol, hasher } = useContext(GlobalContext);
 
   const [origin, setOrigin] = useState<string>();
   const [link, setLink] = useState<string>();
@@ -33,7 +33,7 @@ const Create = () => {
     <Center>
       <VStack>
         <Box>
-          <Text>Your link to receive 1 ELT is:</Text>
+          <Text>Your link to receive 1 {!symbol ? 'token' : symbol} is:</Text>
         </Box>
         <Box bg={'gray.700'} borderRadius={"5px"} padding={"10px"}>
           {link &&

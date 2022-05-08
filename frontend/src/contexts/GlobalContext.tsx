@@ -1,4 +1,4 @@
-import { createContext, useMemo } from "react";
+import { createContext, useMemo, useState } from "react";
 import { ethers } from "ethers";
 import { PoseidonHasher } from "../utils/hasher";
 import { EasyLink, EasyLinkToken } from "../contracts/types";
@@ -17,7 +17,8 @@ export const GlobalContext = createContext<Context>({
   },
   hasher: hasher,
   easyLink: undefined,
-  easyLinkToken: undefined
+  easyLinkToken: undefined,
+  symbol: undefined
 });
 
 export interface Context {
@@ -27,12 +28,14 @@ export interface Context {
   switchChain: (chainId: number) => void,
   hasher: PoseidonHasher,
   easyLink: EasyLink | undefined
-  easyLinkToken: EasyLinkToken | undefined
+  easyLinkToken: EasyLinkToken | undefined,
+  symbol: string | undefined
 }
 
 export const GlobalContextProvider = ({ children }: any) => {
 
   const [provider, chainId, connect, switchChain] = useMetamaskProvider();
+  const [symbol, setSymbol] = useState<string | undefined>();
 
   const easyLinkContract = useMemo(() => {
     console.log("easy link contract creation");
@@ -61,7 +64,13 @@ export const GlobalContextProvider = ({ children }: any) => {
       return;
     }
 
-    return new ethers.Contract(contract.address, CONTRACT_TO_ABI[easyLinkToken], provider.getSigner(0)) as EasyLinkToken;
+    const tokenContract = new ethers.Contract(contract.address, CONTRACT_TO_ABI[easyLinkToken],
+      provider.getSigner(0)) as EasyLinkToken;
+
+    tokenContract.symbol()
+      .then(it => setSymbol(it));
+
+    return tokenContract;
   }, [provider, chainId]);
 
   return (
@@ -72,7 +81,8 @@ export const GlobalContextProvider = ({ children }: any) => {
       switchChain,
       hasher,
       easyLink: easyLinkContract,
-      easyLinkToken: easyLinkTokenContract
+      easyLinkToken: easyLinkTokenContract,
+      symbol
     }}>
       {children}
     </GlobalContext.Provider>
