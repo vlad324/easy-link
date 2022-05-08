@@ -1,3 +1,6 @@
+export const PolygonMumbai = '80001';
+export const HarmonyTestnet = '1666700000';
+
 export const CHAINS: {
   [key: string]: {
     chainName: string,
@@ -8,7 +11,7 @@ export const CHAINS: {
     testnet: boolean,
   }
 } = {
-  '80001': {
+  [PolygonMumbai]: {
     chainName: 'Polygon Mumbai',
     rpcUrl: 'https://rpc-mumbai.matic.today',
     blockExplorerUrl: 'https://mumbai.polygonscan.com/',
@@ -16,7 +19,7 @@ export const CHAINS: {
     nativeCurrencyDecimals: 18,
     testnet: true,
   },
-  '1666700000': {
+  [HarmonyTestnet]: {
     chainName: 'Harmony Testnet',
     rpcUrl: 'https://api.s0.b.hmny.io',
     blockExplorerUrl: 'https://explorer.pops.one/',
@@ -26,6 +29,6 @@ export const CHAINS: {
   },
 }
 
-export const isTestnet = (chainId: string): boolean => {
-  return CHAINS[chainId]?.testnet || false;
+export const isTestnet = (chainId: string | undefined): boolean => {
+  return chainId ? CHAINS[chainId]?.testnet : false;
 }

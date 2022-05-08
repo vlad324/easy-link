@@ -80,7 +80,8 @@ const Header = () => {
         </Center>
         <Center textAlign="right">
           {
-            isTestnet(chainId || "-1") && <Center w={'13rem'}>
+            isTestnet(chainId) &&
+            <Center w={'13rem'}>
               <Button isLoading={mintLoading} onClick={getTestTokens}>Get test ELT</Button>
             </Center>
           }
