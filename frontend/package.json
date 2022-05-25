@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@metamask/eth-sig-util": "^4.0.1",
     "base64url": "^3.0.1",
     "chakra-react-select": "^3.3.3",
     "circomlibjs": "^0.1.2",

@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
-const randomBytes = require("randombytes");
-export const randomBN = (nbytes = 31) => BigNumber.from(randomBytes(nbytes));
+export const randomBN = (nbytes = 31) => BigNumber.from(ethers.utils.randomBytes(nbytes));
