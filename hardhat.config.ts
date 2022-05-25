@@ -18,8 +18,8 @@ const TASK_COMPILE_HASHER = "compile:hasher";
 require("dotenv").config();
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
-const MUMBAI_PRIVATE_KEY = process.env.MUMBAI_PRIVATE_KEY;
-const HARMONY_PRIVATE_KEY = process.env.HARMONY_PRIVATE_KEY;
+const TESTNET_PRIVATE_KEY = process.env.TESTNET_PRIVATE_KEY;
+const MAINNET_PRIVATE_KEY = process.env.MAINNET_PRIVATE_KEY;
 const POLYGON_SCAN_API_KEY = process.env.POLYGON_SCAN_API_KEY;
 
 const config: HardhatUserConfig = {
@@ -41,15 +41,15 @@ const config: HardhatUserConfig = {
   networks: {
     polygonMumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
-      accounts: [`${MUMBAI_PRIVATE_KEY}`]
+      accounts: [`${TESTNET_PRIVATE_KEY}`]
     },
     harmonyTest: {
       url: "https://api.s0.b.hmny.io",
-      accounts: [`${HARMONY_PRIVATE_KEY}`]
+      accounts: [`${TESTNET_PRIVATE_KEY}`]
     },
     harmony: {
       url: "https://api.harmony.one",
-      accounts: [`${HARMONY_PRIVATE_KEY}`]
+      accounts: [`${MAINNET_PRIVATE_KEY}`]
     }
   },
   etherscan: {
