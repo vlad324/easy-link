@@ -16,7 +16,7 @@ contract EasyLink is MerkleTree {
     mapping(uint256 => bool) public commitments;
     mapping(uint256 => bool) public spentNullifiers;
 
-    event Deposit(uint256 commitment, uint32 index);
+    event Deposit(bytes32 recipient, bytes encryptedNote, uint256 commitment, uint32 index);
 
     constructor(
         address _token,
@@ -30,7 +30,7 @@ contract EasyLink is MerkleTree {
         verifier = _verifier;
     }
 
-    function deposit(uint256 commitment) external {
+    function deposit(bytes32 recipient, bytes calldata encryptedNote, uint256 commitment) external {
         require(!commitments[commitment], "Duplicated commitment");
 
         IERC20(token).transferFrom(msg.sender, address(this), amount);
@@ -38,7 +38,7 @@ contract EasyLink is MerkleTree {
         uint32 index = insert(commitment);
         commitments[commitment] = true;
 
-        emit Deposit(commitment, index);
+        emit Deposit(recipient, encryptedNote, commitment, index);
     }
 
     function withdraw(

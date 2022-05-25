@@ -11,6 +11,8 @@ import { BigNumber, BigNumberish } from "ethers";
 import { generateProof } from "./proof";
 import { randomBN } from "../frontend/src/utils/random";
 import { PoseidonHasher } from "../frontend/src/utils/hasher";
+import { getEncryptionPublicKey } from "@metamask/eth-sig-util";
+import { encryptData } from "../frontend/src/utils/encryption";
 
 chai.use(solidity);
 
@@ -53,10 +55,12 @@ describe("EasyLink", () => {
 
   it("should add a new commitment", async () => {
     const commitment = randomBN();
+    const recipient = randomBN(32).toHexString();
+    const encryptedNote = randomBN(32).toHexString();
 
-    await chai.expect(easyLink.deposit(commitment))
+    await chai.expect(easyLink.deposit(recipient, encryptedNote, commitment))
       .to.emit(easyLink, "Deposit")
-      .withArgs(commitment, 0);
+      .withArgs(recipient, encryptedNote, commitment, 0);
 
     const tree = new MerkleTree(10, [], {
       hashFunction: (a, b) => poseidon.hash(BigNumber.from(a), BigNumber.from(b)).toString(),
@@ -71,32 +75,47 @@ describe("EasyLink", () => {
 
   it("should transfer tokens to contract when new commitment is added", async () => {
     const commitment = randomBN();
+    const recipient = randomBN(32).toHexString();
+    const encryptedNote = randomBN(32).toHexString();
 
     const account = (await ethers.getSigners())[0];
-    await chai.expect(() => easyLink.deposit(commitment))
+    await chai.expect(() => easyLink.deposit(recipient, encryptedNote, commitment))
       .to.changeTokenBalance(token, account, ethers.utils.parseEther("-1"));
   });
 
   it("should revert when duplicated commitment", async () => {
     const commitment = randomBN();
+    const recipient = randomBN(32).toHexString();
+    const encryptedNote = randomBN(32).toHexString();
 
-    await chai.expect(easyLink.deposit(commitment))
+    await chai.expect(easyLink.deposit(recipient, encryptedNote, commitment))
       .to.emit(easyLink, "Deposit")
-      .withArgs(commitment, 0);
+      .withArgs(recipient, encryptedNote, commitment, 0);
 
-    await chai.expect(easyLink.deposit(commitment))
+    await chai.expect(easyLink.deposit(randomBN(32).toHexString(), randomBN(32).toHexString(), commitment))
       .to.revertedWith("Duplicated commitment");
   });
 
   it("should revert if nullifier is spent", async () => {
+    const [signer] = await ethers.getSigners();
+    const privateKey = ethers.utils.sha256(await signer.signMessage('some message')).slice(2);
+    const publicKeyBase64 = getEncryptionPublicKey(privateKey);
+    const publicKey = ethers.utils.hexlify(Buffer.from(publicKeyBase64, 'base64'));
+
     const nullifier = randomBN();
     const secret = randomBN();
+
     const commitment = poseidon.hash(nullifier, secret);
 
+    const encryptedData = encryptData(publicKeyBase64, Buffer.concat([
+      ethers.utils.arrayify(nullifier),
+      ethers.utils.arrayify(secret)
+    ]));
+
     // deposit
-    await chai.expect(easyLink.deposit(commitment))
+    await chai.expect(easyLink.deposit(publicKey, encryptedData, commitment))
       .to.emit(easyLink, "Deposit")
-      .withArgs(commitment, 0);
+      .withArgs(publicKey, encryptedData, commitment, 0);
 
     // withdraw
     const account = (await ethers.getSigners())[0];
@@ -122,10 +141,12 @@ describe("EasyLink", () => {
     const nullifier = randomBN();
     const secret = randomBN();
     const commitment = poseidon.hash(nullifier, secret);
+    const recipient = randomBN(32).toHexString();
+    const encryptedNote = randomBN(32).toHexString();
 
-    await chai.expect(easyLink.deposit(commitment))
+    await chai.expect(easyLink.deposit(recipient, encryptedNote, commitment))
       .to.emit(easyLink, "Deposit")
-      .withArgs(commitment, 0);
+      .withArgs(recipient, encryptedNote, commitment, 0);
 
     const proof = await generateValidProof(poseidon, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", nullifier, secret);
 
@@ -134,14 +155,25 @@ describe("EasyLink", () => {
   });
 
   it("should withdraw tokens from a contract", async () => {
+    const [signer] = await ethers.getSigners();
+    const privateKey = ethers.utils.sha256(await signer.signMessage('some message')).slice(2);
+    const publicKeyBase64 = getEncryptionPublicKey(privateKey);
+    const publicKey = ethers.utils.hexlify(Buffer.from(publicKeyBase64, 'base64'));
+
     const nullifier = randomBN();
     const secret = randomBN();
+
     const commitment = poseidon.hash(nullifier, secret);
 
+    const encryptedData = encryptData(publicKeyBase64, Buffer.concat([
+      ethers.utils.arrayify(nullifier),
+      ethers.utils.arrayify(secret)
+    ]));
+
     // deposit
-    await chai.expect(easyLink.deposit(commitment))
+    await chai.expect(easyLink.deposit(publicKey, encryptedData, commitment))
       .to.emit(easyLink, "Deposit")
-      .withArgs(commitment, 0);
+      .withArgs(publicKey, encryptedData, commitment, 0);
 
     // withdraw
     const account = (await ethers.getSigners())[0];
